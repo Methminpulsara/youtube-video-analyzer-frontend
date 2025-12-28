@@ -1,80 +1,57 @@
-"use client";
-
+"use client"
 import { useState } from "react";
 import { analyzeVideo } from "../lib/api";
 
 export default function VideoInputForm({ onStart, onResult, onError }) {
   const [url, setUrl] = useState("");
-  const [analysisType, setAnalysisType] = useState("full");
+  const [type, setType] = useState("full");
 
-  // -----------------------------------------
-  // Submit handler
-  // -----------------------------------------
-  async function submit(e: React.FormEvent) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!url) {
-      onError("Please enter a YouTube URL");
-      return;
+    if (!url.includes("youtube.com") && !url.includes("youtu.be")) {
+      return onError("Please enter a valid YouTube link.");
     }
-
+    onStart();
     try {
-      onStart();
-
-      // Call the fixed API function
-      const res = await analyzeVideo(url, analysisType as
-        "full" | "summary_only" | "topics_only" | "insights_only");
-
-      if (!res || !res.success) {
-        onError(res?.error || "Analysis failed");
-        return;
-      }
-
-      onResult(res);
-    } catch (err: any) {
-      onError(err?.message || "Network or server error");
+      const res = await analyzeVideo(url, type);
+      if (res.success) onResult(res);
+      else onError(res.error);
+    } catch (err) {
+      onError("Something went wrong. Please try again.");
     }
-  }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8 rounded-2xl shadow-2xl border border-gray-700">
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-300 mb-3">YouTube URL</label>
-          <input
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
-          />
+    <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto z-10">
+      <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+      <div className="relative p-8 bg-gray-900 border border-gray-800 rounded-3xl shadow-3xl">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div className="md:col-span-8">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1 mb-2 block">YouTube URL</label>
+            <input 
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Paste video link here..."
+              className="w-full bg-black/40 border border-gray-700 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all placeholder:text-gray-600"
+            />
+          </div>
+          <div className="md:col-span-4">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1 mb-2 block">Analysis Depth</label>
+            <select 
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full bg-black/40 border border-gray-700 rounded-2xl px-5 py-4 text-white focus:outline-none transition-all appearance-none cursor-pointer"
+            >
+              <option value="full">Comprehensive Full Analysis</option>
+              <option value="summary_only">Quick Summary Only</option>
+            </select>
+          </div>
         </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-300 mb-3">Analysis Type</label>
-          <select 
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-            value={analysisType}
-            onChange={(e) => setAnalysisType(e.target.value)}
-          >
-            <option value="full">Full</option>
-            <option value="summary_only">Summary Only</option>
-            <option value="topics_only">Topics Only</option>
-            <option value="insights_only">Insights Only</option>
-          </select>
-        </div>
-
-        <div className="flex items-center justify-between gap-4">
-          <button 
-            onClick={submit}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-semibold hover:from-emerald-700 hover:to-teal-700 transform hover:scale-105 transition-all shadow-lg"
-          >
-            Analyze Video
-          </button>
-        </div>
-        <div className="mt-4 text-xs text-gray-500 text-center">
-          Backend: {process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000/api/v1"}
-        </div>
+        <button className="w-full mt-6 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-widest rounded-2xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] active:scale-[0.98]">
+          Start AI Analysis
+        </button>
       </div>
-    </div>
+    </form>
   );
 }

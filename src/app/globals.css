@@ -1,2 +1,45 @@
 @import "tailwindcss";
 
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+  }
+
+  .print\:hidden, 
+  nav, 
+  footer, 
+  form, 
+  button,
+  .absolute {
+    display: none !important;
+  }
+
+  /* Container එක පලලට සකසයි */
+  .max-w-6xl, .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Card එකේ පෙනුම PDF එකට ගැලපෙන සේ සකසයි */
+  .bg-gray-900\/50, .bg-gray-800 {
+    background-color: #f9fafb !important; /* ලා අළු පැහැයක් */
+    border: 1px solid #e5e7eb !important;
+    color: black !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  h1, h2, h3, h4, p, span {
+    color: black !important;
+  }
+
+  /* Print කිරීමේදී පිටු කැඩෙන ආකාරය පාලනය කරයි */
+  .p-8 {
+    padding: 1rem !important;
+    page-break-inside: avoid;
+  }
+}

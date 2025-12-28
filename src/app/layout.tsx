@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="bg-gradient-to-br from-gray-950 via-gray-900 to-black min-h-screen flex flex-col">
+        <div className="bg-linear-to-br from-blue-300 via-gray-900 to-black min-h-screen flex flex-col">
           <main className="container mx-auto flex-1">{children}</main>
           <footer className="text-center text-sm text-gray-500 py-6">
             © {new Date().getFullYear()} YouTube AI Analyzer

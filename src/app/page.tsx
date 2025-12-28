@@ -1,43 +1,56 @@
 "use client"
-import LoadingSpinner from "../components/Loadingsprinner";
 import { useState } from "react";
 import VideoInputForm from "../components/VideoInput";
 import ResultCard from "../components/ResultCard";
+import LoadingSpinner from "../components/Loadingsprinner";
+import EmptyState from "../components/EmptyState"; 
 
 export default function Home() {
-
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-            Video Analyzer Pro
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Crafting digital experiences with <span className="text-emerald-400">motion</span> and <span className="text-teal-400">code</span>
-          </p>
-        </div>
+    <div className="relative min-h-screen py-20 px-4 overflow-hidden bg-slate-950">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] -z-10"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] -z-10"></div>
 
-        <VideoInputForm
-          onStart={() => { setLoading(true); setError(""); setResult(null); }}
-          onResult={(data) => { setLoading(false); setResult(data); }}
-          onError={(msg) => { setLoading(false); setError(msg); }}
-        />
-
-        {error && (
-          <div className="mt-6 p-4 bg-red-900 border border-red-700 rounded-xl text-red-300 text-center">
-            {error}
-          </div>
-        )}
-
-        {loading && <LoadingSpinner />}
-        {result && <ResultCard data={result} />}
+      <div className="max-w-6xl mx-auto text-center mb-16">
+        <h1 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter">
+          Insight<span className="text-emerald-500">Tube.</span>
+        </h1>
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          AI-driven intelligence for YouTube content. Extract 
+          <span className="text-white"> insights</span>, <span className="text-white">topics</span>, and 
+          <span className="text-white"> summaries</span> in seconds.
+        </p>
       </div>
+
+      <VideoInputForm 
+        onStart={() => { setLoading(true); setError(""); setResult(null); }}
+        onResult={(data) => { setLoading(false); setResult(data); }}
+        onError={(msg) => { setLoading(false); setError(msg); }}
+      />
+
+      {loading && (
+        <div className="mt-20 flex flex-col items-center justify-center space-y-4">
+          <LoadingSpinner />
+          <p className="text-emerald-500 font-mono text-sm animate-pulse tracking-widest uppercase">Analyzing video through GPT-4o-mini...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="mt-12 max-w-2xl mx-auto p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-400 text-center font-medium">
+          ⚠️ {error}
+        </div>
+      )}
+
+      {!loading && !result && !error && <EmptyState/>}
+      {result && <ResultCard data={result} />}
     </div>
   );
 }
+
+// PAHATA THIYENA EMPTYSTATE FUNCTION EKA ME FILE EKEN AIN KARANNA. 
+// MOKADA OYA EKA IMPORT KARANNE '../components/EmptyState' WALIN.
